@@ -1,0 +1,125 @@
+﻿@model Dictionary<string,object>
+@{
+    BlogUsers bloguser = (BlogUsers)Model[Constant.blogUser];
+    BlogUsers sessionuser = (BlogUsers)Model[Constant.SessionUser];
+ @*   string typeortag = (string)Model["typeortag"];*@
+    string typeortagname = (string)Model["typeortagname"];
+    int totalpage = (int)Model["totalpage"];
+    ViewBag.Title = bloguser.UserNickname == null ? bloguser.UserName : bloguser.UserName;
+    ViewBag.Description = bloguser.UserNickname;
+    ViewBag.Keywords = bloguser.UserNickname;
+    Layout = "~/Views/Shared/_BlogLayout.cshtml";
+}
+
+
+<div style="margin-bottom:20px">
+    <h3>@typeortagname</h3>
+</div>
+
+<div class="div_userBlogList">
+    @if (Model.Keys.Contains("blogslist"))
+    {
+        
+        if (totalpage > 1)
+        {
+
+            <div class="divPageNum">
+                <a class="a_total">共<span class="span_total">@(totalpage)</span>页</a>  <a>第<span class="span_pageindex"></span>页</a>
+                <a class="prev_page" href="javascript:void()" onclick="last()">上一页</a>
+                <a class="next_page" href="javascript:void()" onclick="next()">下一页</a>
+            </div>
+        }
+        var list = (List<Blogs>)Model["blogslist"];
+        if(list.Count <=0)
+        {
+            <div class="alert">
+                <p>可能博主比较懒，该类目下目前还没有任何文章！</p>
+            </div>
+        }
+        foreach (var blog in list)
+        {
+            int con_length = blog.Content.Length > 300 ? 300 : blog.Content.Length;
+            //标题
+            <a class="a_blogTitle a_ulBlogTitle" href="~/@(bloguser.UserName)/@(blog.BlogId).html">@blog.Title</a>
+            <br />
+            <div class="blogpro_list">
+                @Html.Raw(blog.Content.Substring(0, con_length))...
+                <div class="divRedNum">
+                    <span>@(bloguser.UserNickname ?? bloguser.UserName)</span>
+                    <span>@(blog.CreateTime) </span>
+                    <span>阅读(@(blog.BlogReadNum))</span>
+                    <span>评论(@(blog.BlogComments.Count()))</span>
+                    @if (sessionuser != null && (bloguser.UserId == sessionuser.UserId || sessionuser.UserName == "admin"))//如果是当前用户
+                    {
+                        <a class="" href="/ManageBlog/Release/@blog.BlogId">编辑</a>
+                    }
+                    else
+                    {
+                        @*  <a class="" href="/Admin/Release/">编辑</a>*@
+                    }
+
+                </div>
+            </div>
+        }
+        if (totalpage > 1)
+        {
+            <div class="divPageNum">
+                <a class="a_total">共<span class="span_total">@(totalpage)</span>页</a>  <a>第<span class="span_pageindex"></span>页</a>
+                <a class="prev_page" href="javascript:void()" onclick="last()">上一页</a>
+                <a class="next_page" href="javascript:void()" onclick="next()">下一页</a>
+            </div>
+        }
+    }
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        var index = getPageIndex();
+        index = index.toString() == "NaN" ? "1" : index;
+        $(".span_pageindex").html(index);
+        if (index <= 1)
+            $(".prev_page").fadeOut("slow");
+        if(index>=(@totalpage))
+        {
+            $(".next_page").fadeOut("slow");
+        }
+    });
+    function next()
+    {
+        if ($(".prev_page").css("display").toLowerCase() == "none")
+            $(".prev_page").fadeIn("slow");
+        @*if(getPageIndex().toString()=="NaN")
+        {
+            location.href = location.href + "/@typeortag/2.html";
+            return;
+        }*@
+        var href = location.href;
+        var pageindex = getPageIndex() + 1;
+        if (pageindex >(@totalpage)) {
+
+            return;
+        }
+
+        location.href = href.substring(0, href.lastIndexOf('/') + 1) + pageindex + ".html";
+    }
+    function last() {
+        if ($(".next_page").css("display").toLowerCase() == "none")
+            $(".next_page").fadeIn("slow");
+        var href = location.href;
+        var pageindex = getPageIndex();
+        --pageindex;
+        if (pageindex <= 0)
+        {
+            return;
+        }
+        location.href = href.substring(0, href.lastIndexOf('/') + 1) + pageindex + ".html";
+    }
+    //获得当前页码
+    function getPageIndex()
+    {
+        var href = location.href;
+        var pageIndex = href.substring(href.lastIndexOf('/') + 1, href.lastIndexOf('.'));
+        return parseInt(pageIndex);
+    }
+</script>

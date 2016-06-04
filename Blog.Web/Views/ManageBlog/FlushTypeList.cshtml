@@ -1,0 +1,80 @@
+﻿@model Dictionary<string,object>
+
+@{
+    var blogtype = (List<BlogTypes>)Model["blogType"];
+    var blog = new Blogs();
+    if (null != Model["blog"])
+    {
+        blog = (Blogs)Model["blog"];
+    }
+}
+
+
+
+ 
+    @*文章分类*@
+    <div class="divtitle show_type" style="margin-top:8px">文章分类</div>
+    <div class="divtitle_chi">
+
+        <a href="javascript:void(0);" onclick="addnewtype(this);">
+            <img style="vertical-align:middle" src="~/Images/add_24px.png" />
+            <span style="font-weight:500;color:#808080;vertical-align:middle">[点击新增]</span>
+        </a>
+        <span class="testmess"></span>
+    </div>
+
+    <div class="divtitle_chi">
+        <a href="#" onclick="GetEditBlogsByType(@(blogtype.Find(t=>t.TypeName.Equals("未分类")).BlogTypeId))">
+            未分类
+        </a>
+        <span class="testmess">(@(blogtype.Find(t => t.TypeName.Equals("未分类")).Blogs.Count(t => !t.IsDel)))</span>
+    </div>
+
+    @*循环加载所有文章分类*@
+    <div class="showtypeList">
+        @foreach (var type in blogtype)
+        {
+            if (!type.TypeName.Equals("未分类"))
+            {
+                <div class="divtitle_chi clearfix">
+                    <a style="float:left" href="javascript:void(0)" onmouseout="editout(this);" onmousemove="editmove(this);" onmouseover="editover(this);" onclick="edittype(this)">
+                        <img src="~/Images/edit_24px.png" />
+                        <input class="hid_typeid" type="hidden" value="@type.BlogTypeId" />
+                    </a>
+                    <a class="typeurl" href="#" onclick="GetEditBlogsByType(@type.BlogTypeId)">
+                        @type.TypeName
+                    </a>
+                    <span>(@type.Blogs.Count(t => !t.IsDel))</span>
+                </div>
+            }
+        }
+    </div>
+
+
+<!--splitfortypelist-->
+
+
+
+@{
+    var tempblog = blog.BlogTypes;
+}
+@foreach (var type in blogtype)
+{
+    if (type.TypeName != "未分类")
+    {
+        if (type.TypeName.Equals(tempblog == null ? null : (tempblog.TypeName)))
+        {
+            <input name="type" type="radio" checked="checked" class="radio_type" key="@type.BlogTypeId" value="@type.TypeName" />
+            <a href="javascript:void()" class="radio_text" onclick="click_text(this)">
+                @type.TypeName
+            </a>
+        }
+        else
+        {
+            <input name="type" type="radio" class="radio_type" key="@type.BlogTypeId" value="@type.TypeName" />
+            <a href="javascript:void()" class="radio_text" onclick="click_text(this)">
+                @type.TypeName
+            </a>
+        }
+    }
+}

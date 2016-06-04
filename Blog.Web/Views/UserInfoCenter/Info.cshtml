@@ -1,0 +1,160 @@
+﻿@model BlogUsers
+@{
+    BlogUsers user=ViewBag.User = (BlogUsers)Model;
+    ViewBag.Title = "个人信息";
+    Layout = "~/Views/Shared/_CenterLayout.cshtml";
+}
+
+
+
+
+
+<div class="col-xs-12 col-sm-9">
+          <div class="profile-info-row">
+              <div class="profile-info-name">
+               用户名 
+              </div>
+              <div class="profile-info-value">
+               <span>@user.UserName</span>
+              </div>
+          </div>
+    <div class="profile-info-row">
+        <div class="profile-info-name">
+            注册时间
+        </div>
+        <div class="profile-info-value">
+            <span>@user.CreateTime</span>
+        </div>
+    </div>
+    <div class="profile-info-row">
+        <div class="profile-info-name">
+            更新时间
+        </div>
+        <div class="profile-info-value">
+            <span>@user.UpTime</span>
+        </div>
+    </div>
+        <div class="profile-user-info profile-user-info-striped" style="margin-top:25px;">
+            <div class="profile-info-row">
+                <div class="profile-info-name"> 昵称 </div>
+                <div class="profile-info-value">
+                    <span class="editable editable-click editable-unsaved" id="nickname" style="display: inline;">@(user.UserNickname==null?"无":user.UserNickname)</span>
+                </div>
+            </div>
+            <div class="profile-info-row">
+                <div class="profile-info-name"> 性别 </div>
+                <div class="profile-info-value">
+                    <span data-type="select" class="editable editable-click" id="sex" style="display: inline;">@(user.Sex==null?"保密":(user.Sex==true?"男":"女"))</span>
+                </div>
+            </div>
+            <div class="profile-info-row">
+                <div class="profile-info-name"> 年龄 </div>
+                <div class="profile-info-value">
+                    <span  data-type="combodate" class="editable editable-click" id="age" style="display: inline;">@(user.Age==null?"无":user.Age.ToString())</span>
+                </div>
+            </div>
+            <div class="profile-info-row">
+                <div class="profile-info-name"> 电话 </div>
+                <div class="profile-info-value">
+                    <span class="editable editable-click" id="phone" style="display: inline;">@(user.Phone==null?"无":user.Phone)</span>
+                </div>
+            </div>
+            <div class="profile-info-row">
+                <div class="profile-info-name"> 邮箱 </div>
+                <div class="profile-info-value">
+                    <span class="editable editable-click" id="email" style="display: inline;">@(user.Email==null?"无":user.Email)</span>
+                </div>
+            </div>
+            <div class="profile-info-row">
+                <div class="profile-info-name"> 简介 </div>
+                <div class="profile-info-value">
+                    <span data-type="textarea" class="editable editable-click" id="about" style="display: inline;">@(user.Introduction==null?"无":user.Introduction)</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- bootstrap -->
+<script src="~/Scripts/bootstrap3-editable-1.5.1/jquery-2.0.3.min.js"></script>
+<script src="~/Scripts/bootstrap3-editable-1.5.1/bootstrap.min.js"></script>
+
+<!-- x-editable (bootstrap version) -->
+<link href="~/Scripts/bootstrap3-editable-1.5.1/bootstrap-editable.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap3-editable-1.5.1/bootstrap-editable.min.js"></script>
+<script src="~/Scripts/bootstrap3-editable-1.5.1/moment.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        $.fn.editable.defaults.mode = 'inline';
+        $('#sex').editable({
+            value: -1,
+            source: [
+                  { value: -1, text: '保密' },
+                  { value: 1, text: '男' },
+                  { value: 0, text: '女' }
+            ]
+        });
+        $('#nickname').editable({
+            type: 'text',
+            name: 'nickname'
+        });
+        $('#phone').editable({
+            type: 'text',
+            name: 'phone'
+        });
+        $('#email').editable({
+            type: 'text',
+            name: 'email'
+        });
+        $('#age').editable({
+            template: 'YYYY年MM月',    
+            combodate: {
+                minYear: 1900,
+                maxYear: 2015,
+                minuteStep: 1
+            },
+            title: "请输入你的出生年月",
+            display: function (value) { var d = new Date();  var age = 0; if (value.month(null) < d.getMonth()) { age = d.getFullYear() - value.year(null); } else { age = d.getFullYear() - value.year(null) } $("#age").html(age); },
+            validate:function(value){if(value=="")return "年份或月份不能为空！"}
+        });
+        $(function () {
+            $('#about').editable({
+                url: '/post',
+                title: '此处输入个人简介...',
+                rows: 10
+            });
+        });
+    });
+    
+</script>
+
+
+
+
+@*$('#name').editable({
+    type: 'text',
+    title: 'Name',
+    url: function () {
+        return $.post('/echo/json/', {
+            json: 'false',
+            delay: .5
+        });
+    },
+    pk: 123,
+    validate: function (value) {
+        if (value == 'bob') {
+            return 'bob is not allowed';
+        }
+    },
+    success: function (response) {
+        if(response === false) {
+            console.log('remote error from success');
+            return 'remote error';
+        }
+    },
+    error: function (response) {
+        console.log('remote error from fail');
+        return 'remote error';
+    }
+});*@ 

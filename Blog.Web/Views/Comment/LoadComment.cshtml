@@ -1,0 +1,149 @@
+﻿@model   Dictionary<string, object>
+@{
+    List<List<BlogComments>> coms = (List<List<BlogComments>>)Model["commentList"];
+    var sessionuser = (BlogUsers)Model["SessionUser"];
+    var SessionUserName = string.Empty;
+    if (null != sessionuser)
+    {
+        SessionUserName = string.IsNullOrEmpty(sessionuser.UserNickname) ? sessionuser.UserName : sessionuser.UserNickname;
+    }
+}
+<style type="text/css">
+    .comment_head {
+        margin: 5px;
+    }
+
+        .comment_head .ReplyUser {
+            display: none;
+        }
+
+        .comment_head .initUsername {
+            color: #b57979;
+        }
+
+        .comment_head .spanCommentID {
+            display: none;
+        }
+
+    .div_comment_content {
+        margin: 15px;
+        margin-left: 20px;
+    }
+
+    .comment_foot {
+        margin-right: 15px;
+    }
+
+        .comment_foot .commentItem {
+            border: 1px dashed #b57979;
+            margin: 5px;
+            margin-left: 15px;
+            padding: 3px;
+            padding-left: 20px;
+            border-width: 1px 0 0;
+        }
+
+        .comment_foot .too_div_content {
+            margin: 15px;
+            margin-left: 20px;
+        }
+</style>
+@if (coms.Count() > 0)
+{ <div class="comment_title">评论列表</div>}
+@foreach (var item in coms)
+{
+    <div class="commentItem">
+        <div class="comment_head">
+            第<span class="spanLayer"></span>楼
+            <span class="ReplyUser">
+                @(item[0].UserId)
+            </span>
+
+            @{
+    var showUser = string.Empty;
+    if (null == item[0].ToUserId)   //这里是为了 兼容cnblog 迁移过来的 评论
+    {
+        showUser = item[0].BlogUsers.UserNickname;
+        <span class="initUsername">
+            @showUser
+        </span>
+    }
+    else // 正常显示 评论
+    {
+        showUser = string.IsNullOrEmpty(item[0].BlogUsers.UserNickname) ? item[0].BlogUsers.UserName : item[0].BlogUsers.UserNickname;
+        <a href="/@(item[0].BlogUsers.UserName)/">
+            <span class="initUsername">
+                @showUser
+            </span>
+        </a>
+    }
+            }
+
+            @(item[0].CreateTime)发表
+            <span class="spanCommentID">@(item[0].BlogCommentId)</span>
+        </div>
+        <div class="div_comment_content">
+            @foreach (var str in item[0].Content.Split('\n'))
+            {
+                <text>
+                    @str
+                </text>
+                <br />
+            }
+            @*@item[0].Content*@
+            @*.Replace("\n", "</br>"))*@
+        </div>
+        <div class="comment_foot">
+            <a href="javascript:void()" onclick="ClickReply(this);">回复</a> <a href="javascript:void()">顶(0)</a> <a href="javascript:void()">踩(0)</a>
+            @for (int j = 1; j < item.Count; j++)
+            {
+                int toUserID = item[j].ToUserId==null?-1:(int)(item[j].ToUserId);
+                //第二层嵌套
+                <div class="commentItem">
+                    <div>
+                        @(item[j].CreateTime)
+                        <span class="ReplyUser" style="display:none">@(item[j].UserId)</span>
+                        <a href="/@(item[j].BlogUsers.UserName)/">
+                            <span class="tooUsername" style="color: #b57979; ">
+                                @(string.IsNullOrEmpty(item[j].BlogUsers.UserNickname) ? item[j].BlogUsers.UserName : item[j].BlogUsers.UserNickname)
+                            </span>
+                        </a>
+                        回复
+                        <span class="to_username" style="color: #b57979; ">@(new Blog.BLL.BlogUsersBLL().GetList(t => t.UserId ==toUserID ).FirstOrDefault().UserNickname)</span>                        :
+                        <span class="spanCommentID" style="display:none">@(item[0].BlogCommentId)</span>
+                    </div>
+                    <div class="too_div_content">
+                        @*@item[j].Content*@
+                        @foreach (var str in item[j].Content.Split('\n'))
+                        {
+                            <text>
+                                @str
+                            </text>
+                            <br />
+                        }
+                    </div>
+                    <a href="javascript:void()" onclick="ClickReply(this);">回复</a> <a href="javascript:void()">顶(0)</a> <a href="javascript:void()">踩(0)</a>
+                    @*第二层内嵌评论区*@
+                    <div class="CommentArea reply">
+                        <div class="div_textarea" style="margin:10px;margin-left:0px">
+                            <textarea class="comment_content" style="width: 300px; height: 60px;"></textarea>
+                        </div>
+                        <div>
+                            <input type="button" class="but_reply" value="提交评论" onclick="ick_subMessg(this);" />
+                        </div>
+                    </div>
+                </div>
+            }
+            @*第一层内嵌评论区*@
+            <div class="CommentArea reply">
+                <div class="div_textarea" style="margin:10px;margin-left:0px">
+                    <textarea class="comment_content" style="width: 300px; height: 60px;"></textarea>
+                </div>
+                <div>
+                    <input type="button" class="but_reply" value="提交评论" onclick="ick_subMessg(this);" />
+                    <span class="alertMess" style="color: red; font-size: 11px; "></span>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,199 @@
+﻿@{
+    ViewBag.Title = "博客家园-搜索";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Images/icon_32px.png" rel="shortcut icon" />
+    <link href="~/Content/BlogSite.css" rel="stylesheet" />
+    <style type="text/css">
+        strong {
+            color: red;
+        }
+
+        body {
+            margin-left: 50px;
+            margin-right: 50px;
+            background-color: #FBF9F9;
+            margin-bottom:20px;
+        }
+
+        .div_soso_n {
+            float:none;
+            text-align: center;
+            margin-top: 60px;
+            background-color:#FBF9F9;
+        }
+          .div_soso_n>img{
+              vertical-align:middle;
+              float:left;
+              height:32px;
+          }
+          .div_soso_n>select{
+              height:32px;
+              margin-left:5px;
+              margin-right:5px;
+              float:left;
+          }
+        .text_soso {
+            width: 70%;
+            height: 32px;
+            vertical-align:middle;
+        }
+
+        .but_soso {
+            width: 12%;
+            height: 32px;
+            padding-top: 2px;
+            font-size: 14px;
+            vertical-align:middle;
+            background-color: #3382f8;
+            color: #ffffff;
+            border: 0;
+        }
+
+        .support-text-top {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .div_bloglist{
+            margin-left:150px;
+            margin-right:150px;
+        }
+        .c-summary-1 {
+            width: 540px;
+            height: 20px;
+            overflow: hidden;
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        .c-summary-1>span{
+            margin-right:20px;
+        }
+        cite {
+            font-style: normal;
+            color: #008000;
+        }
+        .prev_page, .next_page {
+            font-size: 16px;
+            display: inline-block;
+            width: 75px;
+            text-align: center;
+            line-height: 27px;
+        }
+            .prev_page:hover, .next_page:hover {
+                background: url(../../Images/pagebutton_bg1.png) 0 0 no-repeat;
+                color: #fff;
+            }
+    </style>
+</head>
+<body>
+   @Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
+
+    <div>
+        <div class="div_soso_n">
+
+            <img src="~/Images/logo_132_61.png" height="60" onclick="javascript:location.href='/'" />
+            <select name="searchtype" id="searchtype" >
+                <option value="1" >文章标题</option>
+                <option value="2" >文章内容</option>
+            </select>
+            <input type="text" class="text_soso" onkeyup="sosokeyup()" />
+            <input class="but_soso" onclick="sosoclick()" type="button" value="搜索" title="点击搜索" />
+        </div>
+        <div class="div_bloglist">
+
+        </div>
+    </div>
+
+    <hr style="margin-top:50px" />
+    <div style="text-align:center;color:#5c5b5b;margin-top:10px; font-size:12px;">
+        <div style="margin-bottom:8px;">Copyright © @DateTime.Now.ToString("yyyy") BlogHome All Rights Reserved</div>
+        <div>博客家园 版权所有</div>
+    </div>
+
+
+</body>
+</html>
+
+
+<script type="text/javascript">
+    $(function(){
+        $(".text_soso").val(decodeURIComponent($.getUrlVar("keyword")));
+        $(".div_bloglist").html("<span class='support-text-top'>正在为您搜索中...</span>");
+        var href = window.location.href;
+        var p = href.slice(href.indexOf('?'));
+        var url = "@Url.RouteUrl("ControllerAction", new { controller = "Search", action = "SearchBlogResult" })";
+        url += href.indexOf('?') > 0 ? p : "";
+        $.get(url, null, function (data) {
+            $(".div_bloglist").html(data);
+            $(".span_pageindex").html($.getUrlVar("page"));
+            $("#searchtype").val($.getUrlVar("type"));
+        });
+
+
+    });
+
+
+    //上一条
+    function last() {
+        var p = $.getUrlVar("page");
+        if (p) {
+            debugger;
+            p = parseInt(p);
+            if (p > 1) p--;
+            else {
+                return;
+            }
+            var url = window.location.href.substring(0, window.location.href.indexOf('?'));
+            url += "?keyword=" + $(".text_soso").val();
+            url += "&page=" + p;
+            url += "&type=" + $.getUrlVar("type");
+            location.href = url;
+        }
+    }
+    //下一条
+    function next() {
+        var p = $.getUrlVar("page");
+        if (p) {
+            p = parseInt(p);
+            p++;
+            if (p > $(".span_totalpage").html())
+                return;
+            var url = window.location.href.substring(0, window.location.href.indexOf('?'));
+            url += "?keyword=" + $(".text_soso").val();
+            url += "&page=" + p;
+            url += "&type=" + $.getUrlVar("type");
+            location.href = url;
+        }
+    }
+
+    //点击搜索
+    function sosoclick() {
+        var keyword = $(".text_soso").val().trim();
+        if (keyword == null)
+            return;
+        var url = "http://" + location.host + "/Search/Index?keyword=" + keyword + "&page=1&type="+$("#searchtype").val();
+        location.href = url;
+    }
+    //回车搜索
+    function sosokeyup() {
+        var keycode = event.keyCode;
+        if (keycode == "13") {
+            sosoclick();
+        }
+    }
+
+</script>
+

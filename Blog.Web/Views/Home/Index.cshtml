@@ -1,0 +1,235 @@
+﻿@model Dictionary<string,object>
+@using Blog.Domain;
+
+@{
+    ViewBag.Title = "博客家园";
+    Layout = null;
+    BlogUsers userSession = Model["userSession"] as BlogUsers;
+    var total = (int)Model["total"] ;
+}
+
+<!DOCTYPE html>
+
+<html >
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/BlogCSS/IndexCSS.css" rel="stylesheet" />
+    <link href="~/Images/icon_32px.png" rel="shortcut icon" />
+</head>
+
+
+
+
+<body>
+    @Scripts.Render("~/bundles/jquery")
+    <div class="blog_head_operation clearfix" >
+        
+            <a class="a_logo" href="/">
+                博客家园
+                <img src="~/Images/logo_24px.png" />
+            </a>
+            <div class="div_soso_n">
+                <input type="text" class="text_soso" onkeyup="sosokeyup();" />
+                <input class="but_soso" type="button" onclick="sosoclick();" value="搜索" title="点击马上搜" />
+        </div>
+        
+        <div class="userOperation">
+            @*这里使用ajax异步加载  *@
+        </div>
+        @*<div style="clear: both"></div>*@
+    </div>
+
+    <div class="blog_body clearfix">
+        @*blog_body_8*@
+        <div class="blog_body_b">
+            @*<div class="thlist blog_body_b clearfix">*@
+            <div class="thlist clearfix"style="line-height:39px">
+                <div class="indexsort-wrap" style=" float: left;line-height:39px">
+                    <ul class="indexsort-ul" style="list-style:none; padding-left:10px" >
+                        <li id="sort1" class="indexsort-li"><a href="#" onclick="sort_click('默认')">默认排序</a></li>
+                        <li id="sort2" class="indexsort-li"><a href="#" onclick="sort_click('时间')">发布时间</a></li>
+                        <li id="sort3" class="indexsort-li"><a href="#" onclick="sort_click('阅读')">阅读数</a></li>
+                        <li id="sort4" class="indexsort-li"><a href="#" onclick="sort_click('评论')">评论数</a></li>
+
+                    </ul>
+                </div>
+                <div class="div_lastnext" style="float: right; margin-right:10px">
+                    <a>第<span class="span_pageindex">1</span>页</a>
+                    <a class="a_total">共<span class="span_total">@(total)</span>页</a>
+                    
+                    @*<a class="prev_page" href="javascript:void()" onclick="last()">上一页</a>
+                    <a class="next_page" href="javascript:void()" onclick="next()">下一页</a>*@
+                </div>
+            </div>
+            @*</div>*@
+
+            @*<div class="blog_body_b">*@
+            <div class="blog_List" style="padding:30px">
+                @if (Model.Keys.Contains("blog"))
+                {
+                    var list = (List<Blogs>)Model["blog"];
+
+
+
+                    foreach (var blog in list)
+                    {
+
+                        int con_length = blog.BlogRemarks.Length > 300 ? 300 : blog.BlogRemarks.Length;
+                        //标题
+                        <a href="~/@(blog.BlogUsers.UserName)/@(blog.BlogId).html">@blog.Title</a>
+                        //文章列表
+                        <div class="blogpro_list">
+                            @Html.Raw(blog.BlogRemarks.Substring(0, con_length))...
+                            <div class="redNum">
+                                <a href="/@blog.BlogUsers.UserName">@(blog.BlogUsers.UserNickname)</a>
+                                <span>@(blog.CreateTime) </span>
+                                <a class="read_a" href="/@blog.BlogUsers.UserName/@(blog.BlogId).html">阅读(@(blog.BlogReadNum))</a>
+                                <a class="comment_a" href="/@blog.BlogUsers.UserName/@(blog.BlogId).html#CommentUserName">评论(@(blog.BlogComments.Count()))</a>
+                            </div>
+                        </div>
+                    }
+
+
+                }
+            </div>
+            @*</div>*@
+            @*<div class="thlist blog_body_b clearfix">*@
+            <div class="thlist clearfix"  style="border-top:1px solid #DDD;line-height:39px">
+
+              <div class="div_lastnext" style="margin-right:10px;float:right">
+                    <a style="" class="a_total">共<span class="span_total">@(total)</span>页</a>
+                    <a style="">第<span class="span_pageindex">1</span>页</a>
+                    <a style="margin-top:8px;" class="prev_page" href="javascript:void()" onclick="last()">上一页</a>
+                    <a style="margin-top:8px;" class="next_page" href="javascript:void()" onclick="next()">下一页</a>
+                </div>
+            </div>
+            @*</div>*@
+        </div>
+        @* blog_body_2 col-md-8*@
+        <div class="blog_body_e">
+           
+
+            <div class="blog_users">
+                <div class="thlist">
+                    <div style=" text-align: center;font-weight: 900;font-size: 16px;line-height: 39px;color: peru;">博客用户</div>
+                </div>
+                    @if (Model.Keys.Contains("users"))
+                    {
+                        var list = (List<BlogUsers>)Model["users"];
+                        foreach (var type in list)
+                        {
+                            <a class="a_blog_user" href="~/@(type.UserName)" target="_blank" style="display: block;text-align: center;border-bottom: 1px dotted #DDD;border-bottom-left-radius: 150px;border-bottom-right-radius: 150px;"
+                               >@(string.IsNullOrEmpty(type.UserNickname) ? type.UserName : type.UserNickname)</a>
+                        }
+                    }
+                
+                <div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <hr style="margin-left:50px;margin-right:50px;" />
+
+    <div style="text-align:center;margin-top:30px;color:#5c5b5b;font-size:12px;">
+        <div style="margin-bottom:8px;">Copyright © @DateTime.Now.ToString("yyyy") BlogHome All Rights Reserved</div>
+        <div>博客家园 版权所有</div>
+    </div>
+
+
+</body> 
+</html>
+
+
+
+<script type="text/javascript">
+    $(function () {
+        $.post("@Url.RouteUrl("Default", new { controller = "Home", action = "BlogHead" })", "", function (obj) {
+            $(".userOperation").html(obj);
+        });
+
+        $(".span_pageindex").html(getPageIndex());
+        var type = $.getUrlVar("sorttype");
+        $(".indexsort-li").css("backgroundColor", "");
+        if(type==null||type=="1")
+        { $("#sort1").css("backgroundColor", "#DDD") }
+        else if(type=="2")
+        { $("#sort2").css("backgroundColor", "#DDD") }
+        else if(type=="3")
+        { $("#sort3").css("backgroundColor", "#DDD") }
+        else if (type == "4")
+        { $("#sort4").css("backgroundColor", "#DDD") } 
+    });
+    function sort_click(obj)
+    {
+        var href = location.href;
+        if(obj=="默认")
+        {
+            location.href ="/Home/Index?" + "page=" + getPageIndex() + "&sorttype=" + "1";
+        }
+        else if (obj == "时间")
+        {
+            location.href = "/Home/Index?" + "page=" + getPageIndex() + "&sorttype=" + "2";
+        }
+        else if (obj == "阅读") {
+            location.href =  "/Home/Index?" + "page=" + getPageIndex() + "&sorttype=" + "3";
+
+        } else if (obj == "评论") {
+            location.href = "/Home/Index?" + "page=" + getPageIndex() + "&sorttype=" + "4";
+
+        }
+    }
+    //下一页
+    function next() {
+       
+        var href = location.href;
+        //if (href.split("/").length <= 5) {
+        //    location.href = "http://" + location.host + "/home/index/2";
+        //    return;
+        //}
+        if ($.getUrlVar("page") == null) {
+            location.href = "http://" + location.host + "/Home/Index?page=2&sorttype=" + $.getUrlVar("sorttype");
+            return;
+        }
+        
+            var pageindex = getPageIndex() + 1;
+
+            //如果当前页码大于总页码
+            if (pageindex > getTotal()) {
+                return false;
+            }
+        
+
+
+            location.href = href.substring(0, href.lastIndexOf('?') + 1) + "page=" + pageindex + "&sorttype=" + $.getUrlVar("sorttype");
+    }
+    //上一页
+    function last() {
+        var href = location.href;
+        var pageindex = getPageIndex();
+        --pageindex;
+
+        //如果当前页码小于等于 0
+        if (pageindex <= 0) {
+            return false;
+        }
+
+        location.href = href.substring(0, href.lastIndexOf('?') + 1) + "page=" + pageindex + "&sorttype=" + $.getUrlVar("sorttype");
+    }
+
+    //当前页码
+    function getPageIndex() {
+        //var href = location.href;
+        //var pageIndex = href.substring(href.lastIndexOf('/') + 1);
+        var pageIndex = $.getUrlVar("page");
+        return parseInt(pageIndex).toString() == "NaN" ? 1 : parseInt(pageIndex);
+    }
+    //总页码
+    function getTotal() {
+        return parseInt($(".span_total").html());
+    }
+
+</script>

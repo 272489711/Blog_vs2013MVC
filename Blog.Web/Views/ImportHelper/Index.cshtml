@@ -1,0 +1,64 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/Content/bootstrap-3.3.6-dist/css/bootstrap.css" rel="stylesheet" />
+    <style type="text/css">
+        input:hover{color:royalblue;font-variant-caps:small-caps}
+        input:focus{color:dodgerblue}
+    </style>
+    <script type="text/javascript" src="~/Scripts/jquery-1.8.2.min.js">
+        function importdata()
+        {
+            $.post("http://" + location.host + "/" + $("#isForwardCB").attr("checked") + "/importHelper/Import/" + $("#user").val(), function (data) {
+                alert(data)
+            });
+        }
+    </script>
+    <title>博客园博文导入</title>
+</head>
+<body class="container">
+    <div class="jumbotron">
+        <h2 class="text-center">博客园数据导入</h2>
+        <p class="text-center"><small> 联网直接从cnblog网站中把对应用户名的博文数据直接导入到数据库中。</small></p>
+    </div>
+    <div style="padding: 10px 100px 10px;">
+            
+        <div class="row">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user">博客园的用户名</i></span>
+                <input class="form-control" id="user" type="text" value="lyzg" />
+            </div>
+            <br />
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user">本地博客用户名</i></span>
+                <input class="form-control" id="blogUser" type="text" value="admin" />
+            </div>
+            <br />
+        </div>
+
+        <div class="button-container">
+            <div class="col-lg-4">
+                <input type="checkbox" value="IsForwarding?" id="isForwardCB" />标记为转发？
+            </div>
+            <div class="btn-group-lg">
+                <input class="btn btn-primary"  type="button" value="导入" onclick="importdata()" />
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript">
+        function importdata() {
+            $.post("http://" + location.host + "/ImportHelper/btnOk/" + $("#user").val() + "/" +$("#blogUser").val()+"/"+ $("#isForwardCB").attr("checked"), function (data) {
+                alert(data);
+            });
+        }
+    </script>
+
+</body>
+</html>

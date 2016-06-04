@@ -1,0 +1,37 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ include file="EF.Utility.CS.ttinclude"#>
+<#@ output extension=".cs"#>
+  <#
+
+MetadataLoader loader = new MetadataLoader(this);
+
+string inputFile = @"..\Blog.Domain\Model1.edmx";
+
+EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
+
+
+#>
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Blog.Domain;
+
+namespace Blog.BLL
+{
+<#
+    var i =0;
+    foreach (EntityType entity in ItemCollection.GetItems<EntityType>().OrderBy(e => e.Name))
+    { i++;
+  
+    
+#>
+    #region <#=i.ToString("00") #>  <#=entity.Name#>BLL
+	public partial class <#=entity.Name#>BLL : baseBLL<<#=entity.Name#>>
+    {               
+    }
+    #endregion
+
+<#}#>
+}

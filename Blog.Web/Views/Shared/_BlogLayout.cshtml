@@ -1,0 +1,158 @@
+﻿@using Blog.Domain;
+@using Blog.BLL.Common
+@model Dictionary<string, object>
+@{
+    BlogUsers user=null,sessionuser=null;
+    if(Model!=null)
+    {
+         user = ((BlogUsers)Model[Constant.blogUser]);
+         sessionuser = (BlogUsers)Model[Constant.SessionUser];
+    }
+   
+    //==========================================
+    //==   默认博客显示 的模版    ==
+    //==========================================
+
+
+}<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="keywords" content="博客之家,@ViewBag.Keywords">
+    <meta name="description" content="@ViewBag.Description">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/BlogCSS/_BlogLayoutCSS.css"rel="stylesheet"/>
+    <link href="~/Images/icon_32px.png" rel="shortcut icon" />
+</head>
+<body>
+    @Scripts.Render("~/bundles/jquery")
+    @Styles.Render("~/Content/css")
+    <div>
+       @Html.Raw(ViewBag.myfirsthtml)
+    </div>
+    <div class="blog_head">
+        @*头*@
+        <div class="blog_head_operation clearfix">
+            <a class="a_logo" href="/">
+                博客家园
+                <img src="~/Images/logo_24px.png" />
+            </a>
+            @*搜索框*@
+            <div class="div_soso_n">
+                <input type="text" class="text_soso" onkeyup="sosokeyup();" />
+                <input class="but_soso" type="button" onclick="sosoclick();" value="搜索" title="点击立即搜索" />
+            </div>
+            <div class="userOperation">
+            </div>
+        </div>
+        @*用户主信息*@
+        <div class="bloghome_head" style="background-color:beige">
+            <div class="blog_head_user  clearfix">
+                @if (String.IsNullOrEmpty(user.Portrait))
+                {
+                    <img style="border-radius:100px;float:left" height="120" width="120" src="~/Images/default_120px.gif" />}
+                else
+                {<img style="border-radius:100px;float:left" height="120" width="120" src=@user.Portrait /> }
+                <span style="margin-top:10px;display:block" class="bolg_username"><a href="/@(user.UserName)">@user.UserNickname</a></span>
+                @if(!String.IsNullOrEmpty(user.Introduction))
+                {
+                    <i style="margin-top:10px;margin-left:15px;color:gray;font-size:20px">@user.Introduction</i>
+                }
+            </div>
+        </div>
+
+    </div>
+        <div class="blog_body clearfix">
+            @*左右八二分*@
+            <div class="blog_body_8">
+                <div class="blog_info_render">
+                    @RenderBody()
+                </div>
+            </div>
+
+            <div class="blog_body_2">
+                <div>
+                     @Html.Raw(ViewBag.mysidehtml)
+                </div>
+               
+                <div class="blog_info_bind">
+                    
+                        @if (Model.Keys.Contains(Constant.userBlogType))
+                            {
+                            <div class="blog_type" style="border:1px solid beige">
+                                @{
+                                var list = (List<BlogTypes>)Model[Constant.userBlogType];
+                                    if (list.Count > 0)
+                                    {
+                                    <div style=" text-align: center;font-weight: 900;font-size: 16px;line-height: 39px;color: peru;background-color:beige">文章分类</div>
+                                    }
+                                    foreach (var type in list)
+                                    {
+                                        <div style="display: block; text-align: center; border-bottom: 1px dotted #DDD; border-bottom-left-radius: 150px; border-bottom-right-radius: 150px;">
+                                            <a href="~/@(user.UserName)/Type/@(type.BlogTypeId)/1.html">@(type.TypeName)(@type.Blogs.Where(t => t.IsDel == false).Count())</a>
+                                        </div>
+                                    }
+}
+                                   
+                            </div>
+                        }
+                    @if (Model.Keys.Contains(Constant.userBlogTag))
+                    {
+                        <div class="blog_tag" style="border:1px solid beige">
+                            @{
+                        var list = (List<BlogTags>)Model[Constant.userBlogTag];
+                        if (list.Count > 0)
+                        {
+                            <div style=" text-align: center;font-weight: 900;font-size: 16px;line-height: 39px;color: peru;background-color:beige">标签</div>
+                        }
+                        foreach (var tag in list)
+                        {
+                            <div style="display: block; text-align: center; border-bottom: 1px dotted #DDD; border-bottom-left-radius: 150px; border-bottom-right-radius: 150px;">
+                                <a href="~/@(user.UserName)/Tag/@(tag.BlogTagId)/1.html">@tag.BlogTagName</a>
+                            </div>
+                        }
+}
+                            </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @*底部*@
+        <div>
+        @Html.Raw(ViewBag.mybottomhtml)
+        </div>
+        <div class="blog_bottom"></div>
+
+        <div class="footer">
+            @if (user.Email != null)
+            {
+                <div>
+                    邮箱：<a class="footer_mail" href="mailto:@user.Email">@user.Email</a>
+                </div>
+            }
+            <div>
+            </div>
+            <div>
+                Copyright© @DateTime.Now.Year BY <a href="#">@(user.UserNickname == null ? user.UserName : user.UserNickname)</a>
+            </div>
+            <div><a href="~/">博客家园</a>  保留所有权利</div>
+        </div>
+
+
+        <script type="text/javascript">
+            $(function () {
+                $.post("@Url.RouteUrl("ControllerAction", new { controller = "Home", action = "BlogHead" })", "", function (obj) {
+                    $(".userOperation").html(obj);
+                });
+            });
+        </script>
+</body>
+</html>
+
+   @* <script src="~/Content/bootstrap-3.3.6-dist/js/bootstrap.js"></script>*@
+
+
+
+
+

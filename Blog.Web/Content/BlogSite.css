@@ -1,0 +1,144 @@
+﻿html {
+    color: #484444;
+    background-color: #FBF9F9;
+}
+
+* {
+    /*padding: 0px;*/ /*这里会影响百度编辑器的 序列*/
+    margin: 0px;
+    box-sizing: border-box; /*设置元素边框为 内容 + padding + 边框的宽度（不包括margin）;
+    [如果默认不设置此属性的话 那么宽度仅仅只是 元素里面的内容宽度] */
+}
+
+.div_zf {
+    margin: 10px auto;
+    margin-bottom: 30px;
+    color: #ff6a00;
+}
+
+    .div_zf a {
+        color: #14f20b;
+    }
+
+/*清除浮动*/
+.clearfix:after {
+    content: ' ';
+    display: table;
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1; /*兼容IE低版本*/
+}
+
+body {
+    /*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+    font-family: "Segoe UI",Segoe,Tahoma,Arial,Verdana,sans-serif;
+    background-color:#FBF9F9;
+}
+
+    body a:hover {
+        color: #00438a;
+    }
+
+    body a {
+        color: #258fb8;
+        text-decoration: none;
+        line-height: inherit;
+        font-weight: inherit;
+    }
+
+div.blogpro_list {
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+
+}
+
+
+.alertMess {
+    color: red;
+    font-size: 11px;
+}
+
+.a_logo img {
+    vertical-align: bottom;
+}
+
+
+.userOperation {
+        float: right;
+        margin-right: 10px;
+        padding-top: 5px;
+    } 
+
+
+
+
+
+
+.text_soso {
+    background: #fff url('/Images/search_24px.png') no-repeat;
+    text-indent: 24px;
+    border: 1px solid #c6bebe;
+    float: left;
+    outline: 0px solid #c6bebe;
+    width: 80%;
+}
+
+.but_soso {
+    width: 20%;
+    outline: none;
+    background-color: #D7D4D4;
+    border: 0px solid #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+    .but_soso:hover {
+        border: 0.5px solid #258fb8;
+    }
+
+    .but_soso:active {
+        background-color: #beb7b7;
+        border: 0px solid #ffffff;
+    }
+
+
+.div_soso_n {
+    background-color: #D7D4D4;
+    padding: 3px;
+    float:left;
+    margin-left:15px;
+}
+
+.a_logo {
+    text-decoration:none;
+    font-size: 16px;
+    font-weight: 700;
+    padding-left: 15px;
+    float: left;
+}
+
+.blog_head_operation {
+    margin-bottom: 10px;
+    background-image:url(../../Images/login_bg.png);
+    padding: 3px;
+    font-size: 14px;
+    border-bottom: 1px solid #E2E2E2;
+}
+
+    .blog_head_operation .userOperation {
+        float: right;
+        margin-right: 10px;
+        padding-top: 5px;
+    } 
+
+    .blog_head_operation {
+    text-decoration:none;
+    font-size: 16px;
+    font-weight: 700;
+    color: #258fb8;
+   
+    }

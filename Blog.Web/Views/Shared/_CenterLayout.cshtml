@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Images/icon_32px.png" rel="shortcut icon" />
+    <!-- basic styles -->
+    <link href="/Content/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/Content/css/font-awesome.min.css">
+
+    <!--[if IE 7]>
+      <link rel="stylesheet" href="/Content/css/font-awesome-ie7.min.css" />
+    <![endif]-->
+    <!-- page specific plugin styles -->
+
+
+    <link rel="stylesheet" href="/Content/css/ace.min.css">
+    <link rel="stylesheet" href="/Content/css/ace-rtl.min.css">
+    <link rel="stylesheet" href="/Content/css/ace-skins.min.css">
+
+    <!--[if lte IE 8]>
+      <link rel="stylesheet" href="/Content/css/ace-ie.min.css" />
+    <![endif]-->
+    <!-- inline styles related to this page -->
+    <!-- ace settings handler -->
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Scripts/ace.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/Scripts/html5shiv.js"></script>
+    <script src="/Scripts/respond.min.js"></script>
+    <![endif]-->
+
+
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+
+    <div class="navbar navbar-default" id="navbar" style="background-color:grey">
+        <script type="text/javascript">
+            try { ace.settings.check('navbar', 'fixed') } catch (e) { }
+        </script>
+
+        <div class="navbar-container" id="navbar-container">
+            <div class="navbar-header pull-left">
+                <a href="#" class="navbar-brand">
+                    <small>
+                        @(((BlogUsers)ViewBag.User).UserNickname == null ? ((BlogUsers)ViewBag.User).UserName : ((BlogUsers)ViewBag.User).UserNickname)的个人中心
+                    </small>
+                </a><!-- /.brand -->
+            </div><!-- /.navbar-header -->
+            <!-- /.navbar-header -->
+        </div><!-- /.container -->
+    </div>
+
+        <div class="main-container" id="main-container" >
+            <script type="text/javascript">
+                try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+            </script>
+
+            <div class="main-container-inner">
+                <a class="menu-toggler" id="menu-toggler" href="#">
+                    <span class="menu-text"></span>
+                </a>
+
+                <div class="sidebar" id="sidebar">
+                    <script type="text/javascript">
+                        try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+                    </script>
+
+                    <!-- #sidebar-shortcuts -->
+
+                    <ul class="nav nav-list">
+                        <li>
+                            <a href="/@(((BlogUsers)ViewBag.User).UserName)">
+                                <i class="icon-leaf"></i>
+                                <span class="menu-text">博客首页</span>
+                            </a>
+                        </li>
+
+                        <li  >
+                            <a href="/Center/@(((BlogUsers)ViewBag.User).UserName)">
+                                <i class="icon-text-width"></i>
+                                <span class="menu-text">个人信息</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="/Center/@(((BlogUsers)ViewBag.User).UserName)/Portrait">
+                                <i class="icon-smile"></i>
+                                <span class="menu-text">上传头像</span>
+
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="/Center/@(((BlogUsers)ViewBag.User).UserName)/Password">
+                                <i class="icon-lock"></i>
+                                <span class="menu-text">修改密码</span>
+
+
+                            </a>
+                        </li>
+
+                        @*<li>
+                            <a href="/Center/admin">
+                                <i class="icon-picture"></i>
+                                <span class="menu-text">相册管理</span>
+
+                            </a>
+
+
+                        </li>
+
+                        <li>
+                            <a href="#">
+                                <i class="icon-file"></i>
+                                <span class="menu-text">文件管理</span>
+                            </a>
+                        </li>*@
+
+
+
+
+                        <li >
+                            <a href="#" class="dropdown-toggle">
+                                <i class="icon-list"></i>
+                                <span class="menu-text">博客设置</span>
+
+
+                            </a>
+
+
+                        </li>
+
+
+                    </ul><!-- /.nav-list -->
+
+
+
+                    <script type="text/javascript">
+                        try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+                    </script>
+                </div>
+
+                <div class="main-content">
+
+
+                    <div class="page-content">
+                        <div class="page-header">
+                            <h1>
+                                @ViewBag.title
+                            </h1>
+                        </div><!-- /.page-header -->
+                 
+                        <div>
+                            @RenderBody()
+                        </div>
+
+
+                    </div><!-- /.page-content -->
+                </div><!-- /.main-content -->
+            </div><!-- /.main-container-inner -->
+        </div><!-- /.main-container -->
+
+</body>
+</html>
+
+<script type="text/javascript">
+    $(function(){
+        $("li").each(function(){
+            if($(this).find(".menu-text").text()== "@ViewBag.title")
+                $(this).attr("class","active");
+        });
+    });
+</script>
+      

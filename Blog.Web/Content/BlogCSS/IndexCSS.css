@@ -1,0 +1,163 @@
+﻿html {
+    background-color: #FBF9F9;
+}
+
+body {
+    background-color: #FBF9F9;
+}
+
+
+
+.blog_body {
+    width:100%;
+    padding:50px;
+}
+
+
+
+    .blog_body .blog_body_b .blog_List {
+        margin-right: 30px;
+        overflow: hidden;
+    }
+
+    /*.div_soso, .blog_users, .blog_List {
+    margin-left: 20px;
+}*/
+
+    .blog_body .blog_body_b div > a {
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration:none;
+    }
+
+    .blog_body .blog_body_b .blog_List .div_lastnext {
+        text-align: right;
+        margin: 10px;
+    }
+    
+.redNum {
+    text-align: right;
+    margin-top: 5px;
+}
+
+/*.blog_body_e.col-xs-12 .a_blog_user{
+      display: inline-block;
+} 
+
+.blog_body_e.col-md-3 .a_blog_user {
+    display: block;
+}*/
+
+.blog_body_e.col-xs-12 .a_blog_user {
+    display: inline-block;
+}
+
+.blog_body_e, .blog_body_b {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/*PC*/
+@media (min-width: 992px) {
+    .blog_body_e.col-md-3 .a_blog_user {
+        display: block;
+    }
+
+   /*.blog_body*/ .blog_body_b {
+        width: 70%;
+        float: left;
+        border: 1px solid #CDCDCD;
+        background-color: beige;
+        box-shadow: #888 -1px 0px 9px;
+        padding:0px;
+    }
+    .thlist{
+        background-image:url(../../Images/login_bg.png);
+        border-bottom:1px solid #DDD;
+    }
+
+    /*.blog_body*/ .blog_body_e {
+        width: 28%;
+        float: right;
+        box-sizing: border-box;
+    }
+
+}
+
+
+.blog_body .blog_body_e .blog_users .a_blog_user {
+    color: #b57979;
+    margin-top: 6px;
+    
+}
+
+
+
+
+/*border: 1px dotted #c6bebe;*/
+.blog_body .blog_body_e .blog_users {
+    border: 1px solid #c6bebe;
+    box-shadow:#888 -1px 0px 9px;
+    background-color:beige;
+}
+
+
+
+
+.span_logoname {
+    font-size: 16px;
+    font-weight: 700;
+    color: #b57979;
+    padding-left: 15px;
+}
+
+.footer a {
+    color: #484444;
+}
+
+    .footer a:hover {
+        color: red;
+    }
+
+.footer div {
+    margin-top: 3px;
+}
+
+.footer {
+    text-align: center;
+    width: 100%;
+    float: left;
+    margin-top: 60px;
+    padding: 10px;
+}
+
+.TrafficStatistics {
+    display: none;
+}
+
+
+
+.prev_page,.next_page
+{ font-size:16px;
+  display:inline-block;
+    width:75px;
+    text-align:center;
+    line-height:27px;
+}
+.prev_page:hover,.next_page:hover
+{background: url(../../Images/pagebutton_bg.png) 0 0 no-repeat; color: #fff;
+}
+
+
+.indexsort-ul .indexsort-li{
+    float:left;
+    padding:0px 10px;
+}
+
+.indexsort-ul .indexsort-li a{
+    text-decoration: none;
+}
+.indexsort-ul .indexsort-li:hover
+{
+    background-color:#ddd;
+}

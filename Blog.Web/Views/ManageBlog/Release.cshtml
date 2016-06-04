@@ -1,0 +1,603 @@
+﻿@model Dictionary<string, object>
+@{
+    ViewBag.Title = "博文管理-博客家园";
+    Layout = null;
+    String OperateTitle;
+    var blogtype = (List<BlogTypes>)Model["blogType"];
+    var blogTag = (List<BlogTags>)Model["blogTag"];
+    var blog = new Blogs();
+    if (null != Model["blog"])
+    {
+        OperateTitle = "编辑文章";
+        blog = (Blogs)Model["blog"];
+    }
+    else
+    {
+        OperateTitle = "发布文章";
+    }
+
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/BlogSite.css" rel="stylesheet" />
+    <link href="~/Content/BlogCSS/_BlogLayoutCSS.css" rel="stylesheet" />
+    <link href="~/Images/icon_32px.png" rel="shortcut icon" />
+    @Scripts.Render("~/bundles/jquery")
+    @Styles.Render("~/Content/css", "~/Content/themes/base/css")
+    <style type="text/css">
+        .div_release_content {
+            padding: 20px;
+            padding-top: 0px;
+        }
+
+        button {
+            width: 100px;
+            height: 30px;
+        }
+
+        .alertMess {
+            color: red;
+            font-size: 11px;
+        }
+
+        .div_typelist, .div_taglist, .div_options {
+            margin-top: 4px;
+            margin-bottom: 8px;
+            padding: 4px;
+            border: 1px dashed #808080;
+            font-size: 11px;
+        }
+
+        .div_detoptions {
+            margin-top: 8px;
+        }
+
+        .chk_a {
+            text-decoration: none;
+            color: #854a4a;
+        }
+
+        .title_font {
+            color: #000000;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .txt_title {
+            padding: 3px;
+        }
+
+        .body_head a.body_head_article {
+            color: #ff0000;
+            font-weight: 600;
+        }
+
+
+
+
+        .div_head {
+            background-color: #D7D4D4;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .div_body_2 {
+            float: left;
+            width: 20%;
+            border-right: 1px dashed #D7D4D4;
+            box-sizing: border-box;
+            padding: 8px;
+            padding-left: 10px;
+        }
+
+        .div_body_8 {
+            float: right;
+            width: 80%;
+            /*border: 1px dashed #f3ebeb;*/
+            box-sizing: border-box;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .userOperation {
+            float: right;
+            margin-right: 10px;
+            padding-top: 5px;
+        }
+
+        .divtitle {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .divtitle_chi {
+            padding: 4px;
+        }
+
+        .body_head {
+            padding: 5px;
+            padding-left: 30px;
+            border: 1px solid #eee;
+            background-color: beige;
+            margin-bottom: 8px;
+            font-size:medium;
+            font-weight:700
+        }
+
+         
+    </style>
+
+</head>
+<body>
+    <div class="blog_head">
+        @*头*@
+        <div class="blog_head_operation clearfix">
+            <a class="a_logo" href="/">
+                博客家园
+                <img src="~/Images/logo_24px.png" />
+            </a>
+            <div class="userOperation">
+            </div>
+        </div>
+
+    </div>
+    @*正文*@
+    <div class="div_body clearfix">
+        @*左侧20%*@
+        <div class="div_body_2">
+            <div id="typelist_ajax">
+            
+                @*文章分类*@
+                <div class="divtitle show_type" style="margin-top:8px">文章分类</div>
+                <div class="divtitle_chi">
+                    
+                    <a href="javascript:void(0);" onclick="addnewtype(this);">
+                        <img style="vertical-align:middle" src="~/Images/add_24px.png" />
+                        <span style="font-weight:500;color:#808080;vertical-align:middle">[点击新增]</span>
+                    </a>
+                    <span class="testmess"></span>
+                </div>
+
+                <div class="divtitle_chi">
+                    <a href="#" onclick="GetEditBlogsByType(@(blogtype.Find(t=>t.TypeName.Equals("未分类")).BlogTypeId))">
+                        未分类
+                    </a>
+                    <span class="testmess">(@(blogtype.Find(t => t.TypeName.Equals("未分类")).Blogs.Count(t=>!t.IsDel)))</span>
+                </div>
+
+                @*循环加载所有文章分类*@
+                <div class="showtypeList">
+                    @foreach (var type in blogtype)
+                    {
+                        if (!type.TypeName.Equals("未分类"))
+                        {
+                            <div class="divtitle_chi clearfix">
+                                <a style="float:left" href="javascript:void(0)" onmouseout="editout(this);" onmousemove="editmove(this);" onmouseover="editover(this);" onclick="edittype(this)">
+                                    <img src="~/Images/edit_24px.png" />
+                                    <input class="hid_typeid" type="hidden" value="@type.BlogTypeId" />
+                                </a>
+                                <a class="typeurl" href="#" onclick="GetEditBlogsByType(@type.BlogTypeId)">
+                                    @type.TypeName
+                                </a>
+                                <span>(@type.Blogs.Count(t=>!t.IsDel))</span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+        @*右侧80%*@
+        <div class="div_body_8">
+            <div class="body_head" style="">@OperateTitle
+            </div>
+
+
+            <script src="~/Plug/ueditor/ueditor.config.js"></script>
+            <script src="~/Plug/ueditor/ueditor.all.js"></script>
+            @*这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文*@
+            <script src="~/Plug/ueditor/lang/zh-cn/zh-cn.js"></script>
+            <div class="div_release_content">
+                <div>
+                    <div style="margin-bottom:3px;" class="title_font">标题：</div>
+                    <div>
+                        <input type="text" class="txt_title" style="width:100%" value="@blog.Title" />
+                    </div>
+                </div>
+                <div style="margin-top:10px;">
+                    <div style="margin-bottom:3px" class="title_font">内容：</div>
+                    <script id="editor" type="text/plain" style="width: 100%; height: 400px;">
+                    </script>
+                </div>
+                <div class="div_detoptions">
+                    <span class="title_font">个人分类</span>
+                    <div class="div_typelist" id="typelistforselect_ajax">
+                        @{
+                            var tempblog = blog.BlogTypes;
+                        }
+                        @foreach (var type in blogtype)
+                        {
+                            //if (type.TypeName != "未分类")
+                            {
+                                if (type.TypeName.Equals(tempblog == null ? null : (tempblog.TypeName)) || (type.TypeName == "未分类" && tempblog == null))
+                                {
+                                    <input name="type" type="radio" checked="checked" class="radio_type" key="@type.BlogTypeId" value="@type.TypeName" />
+                                    <a href="javascript:void()" class="radio_text" onclick="click_text(this)">
+                                        @type.TypeName
+                                    </a>
+                                }
+                                else
+                                {
+                                    <input name="type" type="radio" class="radio_type" key="@type.BlogTypeId" value="@type.TypeName" />
+                                    <a href="javascript:void()" class="radio_text" onclick="click_text(this)">
+                                        @type.TypeName
+                                    </a>
+                                }
+                            }
+                        }
+                    </div>
+                    <span class="title_font">标签 </span> <span class="red" style="color:red;font-size:10px">(以逗号,分割)</span>
+                    <div style="margin-top:3px">
+                        @{
+                            List<string> temptaglist = null;
+                            if (blog != null)
+                            {
+                                temptaglist = blog.BlogTags.Select(t => t.BlogTagName).ToList<string>();
+                            }
+                        }
+                        <input type="text" style="width:100%;padding:2px" class="text_tag" value="@(temptaglist.MyToString())" />
+                    </div>
+                    <div class="div_taglist">
+                        @foreach (var tag in blogTag)
+                        {
+                            if (temptaglist.Contains(tag.BlogTagName))
+                            {
+                                <input type="checkbox" checked="checked" class="chk_tag" key="@tag.BlogTagId" value="@tag.BlogTagName" onclick="click_tag(this)" />
+                                <a href="javascript:void()" class="check_text" onclick="click_text(this)">@tag.BlogTagName</a>
+                            }
+                            else
+                            {
+                                <input type="checkbox" class="chk_tag" key="@tag.BlogTagId" value="@tag.BlogTagName" onclick="click_tag(this)" />
+                                <a href="javascript:void()" class="check_text" onclick="click_text(this)"> @tag.BlogTagName</a>
+                            }
+
+                        }
+                    </div>
+
+                    <span>发布选项</span>
+                    <div class="div_options">
+                        @{
+                            if (blog.IsShowHome == true)
+                            {
+                                <input type="checkbox" checked="checked" class="isshowhome" id="isshowhome" /> <label for="isshowhome">显示在 博客家园 首页</label>
+                            }
+                            else
+                            {
+                                <input type="checkbox" class="isshowhome" id="isshowhome" /> <label for="isshowhome">显示在 博客家园 首页</label>
+                            }
+                        }
+
+                    </div>
+
+                </div>
+                <div style="margin-top:10px;margin-bottom:50px">
+                    <button class="but_Release" onclick="getContent()">发布</button>
+                    <span class="alertMess"></span>
+                    <input type="hidden" class="hidden_data" value="@blog.Content" />
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+    @*尾部*@
+    <div class="div_footer" style="display:block"></div>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $.post("@Url.RouteUrl("ControllerAction", new { controller = "Home", action = "BlogHead" })", "", function (obj) {
+                $(".userOperation").html(obj);
+            });
+        });
+
+        function flushtypelist()
+        {
+            $.post("@Url.RouteUrl("ControllerAction", new { controller="ManageBlog",action = "FlushTypeList"})", {"blogid":@blog.BlogId}
+                ,function(data)
+                {
+                    var datalist = data.split("<!--splitfortypelist-->");
+                    $("#typelist_ajax").html(datalist[0]);
+                    $("#typelistforselect_ajax").html(datalist[1]);
+                })
+        }
+
+
+
+        //新增类型
+        function addnewtype(obj) {
+            var strhtml = "<div class='newtype'><input type='text' class='text_newtype' onblur='newtype_onblur(this);'/></div>";
+            var chi = $(obj).parents(".divtitle_chi");
+            //           if (chi.find(".newtype").length <= 0) {
+            chi.append(strhtml).find(".text_newtype").focus();
+            //         }
+        }
+        //未分类
+        function nottype(obj) {
+
+        }
+
+        function newtype_onblur(obj) {
+            var value = $(obj).val();
+            if (!value) {
+                $(obj).parents(".newtype").remove();
+                return;
+            }
+            $.post("@Url.RouteUrl("ControllerAction", new { controller = "ManageBlog", action = "NewAddType" })",
+                { "newtypename": value }, function (data) {
+                    if (ShowAjaxResult(data)) {
+                        //刷新
+                        flushtypelist();
+                    }
+                });
+            var newhtml = "<a>" + value + "</a>";
+            $(obj).parents(".newtype").removeClass("newtype").addClass("divtitle_chi").html(newhtml);
+        }
+
+        //修改 文章 类型
+        function edittype(obj) {
+            $(obj).parents(".divtitle_chi").find(".text_newtype").unbind("blur");
+            if (!$(obj).next().hasClass("newtype")) {
+                var value = $(obj).next().html().trim();//取得 文章类型 名称
+                var typeid = $(obj).find(".hid_typeid").val();  //取得 文章类型id  onblur='edittype_onblur(this);'
+                var strhtml = "<div style='float:left' class='newtype'><input style='width:80px' type='text' class='text_newtype' value='" 
+                    + value + "' keyvalue='" + value + "' keyid='" + typeid + "' /></div>";
+                $(obj).next().css("display", "none"); // 隐藏原来显示的文章类型
+                $(obj).after(strhtml).next().find(".text_newtype").focus().bind("blur", function () {
+                    edittype_onblur($(obj).parents(".divtitle_chi").find(".text_newtype"));
+                });  //把 修改的文本元素添加 并获得焦点
+            }
+            else {
+                edittype_onblur($(obj).after(strhtml).next().find(".text_newtype"));
+            }
+        }
+        //鼠标移到目标的上方
+        function editover(obj) {
+            $(obj).parents(".divtitle_chi").find(".text_newtype").unbind("blur");
+            //$(".testmess").html("unbind");
+        }
+     
+        //鼠标移出目标的上方
+        function editout(obj) {
+            //$(".testmess").html("bind");
+            $(obj).parents(".divtitle_chi").find(".text_newtype").unbind("blur");
+            $(obj).parents(".divtitle_chi").find(".text_newtype").bind("blur", function () {
+                // $(".testmess").html("bind");
+                edittype_onblur($(obj).parents(".divtitle_chi").find(".text_newtype"));
+            });
+        }
+        //删除类型
+        function deltype(obj) {
+            var typeid = $(obj).attr("keyid").trim();
+            var value = $(obj).attr("keyvalue").trim();
+            if(typeid&&confirm("属于"+value+"类型的博客将迁移至未分类型中，确定删除？"))
+                $.post("@Url.RouteUrl("ControllerAction", new { controller = "ManageBlog",action="DeleteTypeById"})", { "id": typeid }
+                    , function (data) {
+                    if (data == "True")
+                    {
+                        $(obj).parents(".newtype").next().css("display", "");
+                        $(obj).parent(".newtype").remove();
+                        alert("删除成功！");
+                        //刷新
+                        flushtypelist();
+                    }
+                    else {
+                        $(obj).parents(".newtype").next().css("display", "");
+                        $(obj).parent(".newtype").remove();
+                        alert("[失败]" + data);
+                    }
+                });
+            else
+            {
+                $(obj).parents(".newtype").next().css("display", "");
+                $(obj).parent(".newtype").remove();
+            }
+
+        }
+        function edittype_onblur(obj) {
+            var value = $(obj).val().trim(); //新的文章类型
+            var typeid = $(obj).attr("keyid").trim();//类型ID
+            var oldvalue = $(obj).attr("keyvalue").trim();//旧的文章类型
+            if (!value || !typeid || value == oldvalue) { //1.如果值为空 2.如果类型id为空 3.如果没有修改 则直接返回
+                if (!value) deltype(obj);
+                $(obj).parents(".newtype").next().css("display", "");
+                $(obj).parents(".newtype").remove();
+                return;
+            }
+            $.post("@Url.RouteUrl("ControllerAction", new { controller = "ManageBlog", action = "EditType" })",
+            { "typename": value, "typeid": typeid }, function (data) {
+                if (ShowAjaxResult(data)) {
+                    $(obj).parents(".newtype").next().remove();
+                    var newhtml = "<a>" + value + "</a>";
+                    var newtype = $(obj).parents(".newtype")
+                    newtype.after(newhtml);
+                    newtype.remove();
+                }
+                else {
+                    $(obj).parents(".newtype").next().css("display", "");
+                    $(obj).parents(".newtype").remove();
+                    alert("修改失败！");
+                }
+            });
+        }
+
+        function GetEditBlogsByType(id) {
+            $.post("/ManageBlog/EditBlogsByType/" + id, "", function (obj) {
+                $(".div_body_8").html(obj);
+            });
+        }
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+@*<script src="~/Scripts/jquery-1.8.2.js"></script>
+    <script src="~/Scripts/blog/jquery.BlogCommon.js"></script>*@
+<script type="text/javascript">
+    //var ue = UE.getEditor('editor');
+    //获取编辑器里面的内容 并传入后台
+    function getContent() {
+        $(".alertMess").html("");
+        var content = UE.getEditor('editor').getContent();
+        var title = $(".txt_title").val();
+
+        //#region  数据验证
+        $(".alertMess").html("");
+        if (!title) {
+            $(".alertMess").html("您还没有填写标题");
+        }
+        else if (title.length >= 100) {
+            $(".alertMess").html("您填写标题过长");
+        }
+        else if (!content) {
+            $(".alertMess").html("您还没有填写内容");
+        }
+        else if (content.length <= 10) {
+            $(".alertMess").html("您填写内容过少");
+        }
+        else if (content.length >= 300000) {
+            $(".alertMess").html("您填写内容过多");
+        }
+        if ($(".alertMess").html()) {
+            return;
+        }
+        //#endregion
+
+        //选择的分类
+        var chk_type = $(".radio_type:checked").attr("key");
+
+        //选择的标签
+        var oldtag = "", newtag = "";
+        var text_taglist = $(".text_tag").val().split(/[,，]/);
+
+        var chk_taglsit = new Array();
+        $(".chk_tag").each(function () {
+            chk_taglsit[chk_taglsit.length] = $(this).val();
+        });
+
+        text_taglist.forEach(function (value, index) {
+            if ($.inArray(value, chk_taglsit) >= 0) {
+                oldtag += value + ",";
+            }
+            else {
+                newtag += value + ",";
+            }
+        });
+
+        //是否显示在主页
+        var isshowhome = $(".isshowhome").is(":checked");
+
+        var sp = window.location.href.split("/");
+        var blogid = sp[sp.length - 1];
+
+        var objJosn = {
+            "content": content,
+            "title": title,
+            "oldtag": oldtag,
+            "newtag": newtag,
+            "chk_type": chk_type,
+            "isshowhome": isshowhome,
+            "blogid": blogid
+        };
+
+        $.post("/ManageBlog/Release", objJosn, function (data) {
+            if (ShowAjaxResult(data, ".alertMess")) {
+
+            }
+        }, "json");
+    }
+
+    function click_text(obj) {
+        if ($(obj).prev(":radio").hasClass("radio_type"))  //如果是type标签，点击则选中前面对应的radio
+            $(obj).prev(":radio").attr("checked", !$(obj).prev(":checkbox").is(":checked"));
+        if ($(obj).prev(":checkbox").hasClass("chk_tag")) //如果是tag标签    另外处理
+        {
+            $(obj).prev(":checkbox").attr("checked", !$(obj).prev(":checkbox").is(":checked"));
+            click_tag($(obj).prev(":checkbox"));
+        }
+    }
+
+    var tool = new Array();
+    tool[tool.length] = "FullScreen";
+    tool[tool.length] = "Source";
+
+    //页面加载完成时
+    $(function () {
+        //http://www.cnblogs.com/treasurelife/p/3734104.html
+        var html = $(".hidden_data").val();
+        // 自定义的编辑器配置项,此处定义的配置项将覆盖editor_config.js中的同名配置
+        var editorOption = {
+            //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+            //toolbars: [tool],
+            //focus时自动清空初始化时的内容
+            //autoClearinitialContent: false,
+            //关闭elementPath
+            //elementPathEnabled: true,
+            allowDivTransToP: false,
+            removeFormatTags: "b,var",
+            autoClearinitialContent: false
+        };
+        var editor_a = new baidu.editor.ui.Editor(editorOption);
+        editor_a.render('editor');
+        editor_a.ready(function () {
+            editor_a.setContent(html, false);  //赋值给UEditor
+        });
+        var sp = window.location.href.split("/");
+        if (!isNaN(sp[sp.length - 1])) {
+            $(".but_Release").html("保存修改");
+        }
+
+    });
+
+    //$(function () {
+    //    SyntaxHighlighter.highlight();
+    //});
+
+    //点击tag标签时
+    function click_tag(obj) {
+        if ($(obj).is(":checked")) { //如果选中
+            var texttag = $(".text_tag");
+            if (texttag.val().length > 1 && texttag.val()[texttag.val().length - 1] != ",") {
+                texttag.val(texttag.val() + ",");
+            }
+            var text_tag = texttag.val() + $(obj).val();
+            texttag.val(text_tag + ",");
+        }
+        else { //如果取消选中
+            var text_taglist = $(".text_tag").val().split(/[,，]/);
+            $(".text_tag").val("");
+            for (i = 0; i <= text_taglist.length; i++) {
+                if ($(obj).val() != text_taglist[i] && text_taglist[i])
+                    $(".text_tag").val($(".text_tag").val() + text_taglist[i] + ",");
+            }
+        }
+    }
+</script>
+

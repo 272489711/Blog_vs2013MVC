@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e9d502137c1a4138a5c452c7487ff092" Name="Diagram1" ZoomLevel="81" >
+        <EntityTypeShape EntityType="Model1.Blogs" Width="1.5" PointX="7.875" PointY="5" />
+        <EntityTypeShape EntityType="Model1.BlogTags" Width="1.5" PointX="5.75" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model1.BlogTypes" Width="1.5" PointX="10.25" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model1.BlogComments" Width="1.5" PointX="10.125" PointY="7.125" />
+        <EntityTypeShape EntityType="Model1.BlogUsers" Width="1.5" PointX="2.625" PointY="5.125" />
+        <AssociationConnector Association="Model1.BlogTagsBlogs" />
+        <AssociationConnector Association="Model1.BlogCommentsBlogs" />
+        <AssociationConnector Association="Model1.BlogTypesBlogs" />
+        <AssociationConnector Association="Model1.BlogTagsBlogUsers" />
+        <AssociationConnector Association="Model1.BlogsBlogUsers" />
+        <AssociationConnector Association="Model1.BlogTypesBlogUsers" />
+        <AssociationConnector Association="Model1.BlogCommentsBlogUsers" />
+        <EntityTypeShape EntityType="Model1.UserFiles" Width="1.5" PointX="0.75" PointY="5.875" />
+        <AssociationConnector Association="Model1.UserFilesBlogUsers" ManuallyRouted="false" >
+          <ConnectorPoint PointX="11.75" PointY="8.4148160807291656" />
+          <ConnectorPoint PointX="11.25" PointY="27.098030734263524" />
+          <ConnectorPoint PointX="11.25" PointY="4.125" />
+          <ConnectorPoint PointX="2.156252" PointY="4.125" />
+          <ConnectorPoint PointX="2.156252" PointY="5.125" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="Model1.ReadInfo" Width="1.5" PointX="5.625" PointY="7.5" />
+        <AssociationConnector Association="Model1.ReadInfoBlogUsers" />
+        <AssociationConnector Association="Model1.BlogsReadInfo" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

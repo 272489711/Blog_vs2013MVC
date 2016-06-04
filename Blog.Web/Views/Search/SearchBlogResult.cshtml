@@ -1,0 +1,32 @@
+﻿@model Dictionary<string,object>
+
+@if (null != Model)
+{
+    
+
+    <span class="support-text-top">为您找到相关结果@((int)Model["count"])个</span>
+    if ((int)Model["totalpage"] > 1)
+    {
+        <div style="text-align:right">
+            <a class="a_total">共<span class="span_totalpage">@((int)Model["totalpage"])</span>页</a>  <a>第<span class="span_pageindex"></span>页</a>
+            <a class="prev_page" href="javascript:void()" onclick="last()">上一页</a>
+            <a class="next_page" href="javascript:void()" onclick="next()">下一页</a>
+        </div>
+    }
+    foreach (var item in (List<Blogs>)Model["blogslist"])
+    {
+
+        <div style="padding-top:10px">
+                <h3>
+                    <a href="@item.BlogUrl" target="_blank">@Html.Raw(item.Title)</a>
+                </h3>
+            
+            <div style="padding-top:5px">
+                <p class="p_content">@Html.Raw(item.Content)</p>
+            </div>
+
+            <div class="c-summary-1" ><span>作者：@(item.BlogUsers.UserNickname==null?item.BlogUsers.UserName:item.BlogUsers.UserNickname)</span><span>发布：@item.CreateTime</span></div>
+            <cite>@Request.Url.Host@item.BlogUrl</cite>
+        </div>
+    }
+}

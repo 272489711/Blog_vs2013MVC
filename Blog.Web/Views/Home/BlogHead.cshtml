@@ -1,0 +1,36 @@
+﻿@model BlogUsers
+@if (null != Model)
+{
+    <a href="/@Model.UserName">
+        @(string.IsNullOrEmpty(Model.UserNickname) ? Model.UserName : Model.UserNickname)
+        欢迎您!
+    </a> <span>|</span> <a href="#" onclick="CancellationLocation()">注销</a> <span>|</span> <a href="~/ManageBlog/Release">文章管理</a> <span>|</span> <a href="/Center/@Model.UserName">个人中心</a>
+}
+else
+{
+    <a href="#" onclick="LoginWithPar()">登录</a> <span>|</span>    <a href="/Account/Register">注册</a> 
+        }
+       
+
+    <script type="text/javascript">
+        function LoginWithPar() {
+            location.href = "http://" + location.host + "/Account/Login?href=" + location.href;
+        }
+
+        $(document).ready(function (e) {
+            t = $('.blog_head_operation').offset().top;
+            mh = $('.main').height();
+            fh = $('.blog_head_operation').height();
+            $(window).scroll(function (e) {
+                s = $(document).scrollTop();
+                if (s > t) {
+                    $('.blog_head_operation').css('position', 'fixed');
+                    $('.blog_head_operation').css('top', '0');
+                    $('.blog_head_operation').css('box-shadow', '0 0 5px #888');
+                } else {
+                    $('.blog_head_operation').css('position', '');
+                    $('.blog_head_operation').css('box-shadow', '');
+                }
+            })
+        });
+    </script>
